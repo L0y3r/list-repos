@@ -3,6 +3,15 @@ const octokit = new Octokit ()
 
 const getRepos = async (user) => {
     const {data} = await octokit.repos.listForUser({username:user});
-    console.log(data);
+    dataLength = data.length;
+    while (dataLength) {
+        dataLength--;
+        repoName = data[dataLength].name;
+        const result = await octokit.issues.listForRepo({
+            owner:user,
+            repo:repoName
+        });
+        console.log(repoName, result.data);
+    }
 }
-getRepos('L0y3r');
+getRepos('IntersysConsulting');
