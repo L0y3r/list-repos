@@ -8,8 +8,8 @@ const octokit = new Octokit({
 const getRepos = async (user) => {
 
     let reposPromises = [];
-    const { data } = await octokit.repos.listForUser({ username: user }),
-        dataLength = data.length;
+    const { data } = await octokit.repos.listForUser({ username: user });
+    const dataLength = data.length;
 
     for (let index = 0; index < dataLength; index++) {
         const repoName = data[index].name;
@@ -20,28 +20,26 @@ const getRepos = async (user) => {
         }));
     }
 
-    Promise.all(reposPromises)
-        .then(responses => {
+    Promise.all(reposPromises).then(responses => {
 
-            let reposAndTheirIssues = [];
-            const responsesLength = responses.length;
+        let reposAndTheirIssues = [];
+        const responsesLength = responses.length;
 
-            for (let index = 0; index < responsesLength; index++) {
-                
-                const repoName = data[index].name,
-                    repoIssues = responses[index].data;
-                
-                reposAndTheirIssues.push({
-                    repo: repoName,
-                    issues: repoIssues
-                });
-            }
+        for (let index = 0; index < responsesLength; index++) {
 
-            console.log(reposAndTheirIssues);
-        })
-        .catch(reason => {
-            console.error(reason);
-        });
+            const repoName = data[index].name,
+                repoIssues = responses[index].data;
+
+            reposAndTheirIssues.push({
+                repo: repoName,
+                issues: repoIssues
+            });
+        }
+
+        console.log(reposAndTheirIssues);
+    }).catch(reason => {
+        console.error(reason);
+    });
 
 }
 getRepos('IntersysConsulting');
