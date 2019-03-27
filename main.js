@@ -5,41 +5,39 @@ const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN
 });
 
-const getRepos = async (user) => {
+const getRepos = (user) => {
+    return octokit.repos.listForUser({ username: user }).then(({ data }) => {
 
-    let reposPromises = [];
-    const { data } = await octokit.repos.listForUser({ username: user });
-    const dataLength = data.length;
+        let reposPromises = [];
+        const dataLength = data.length;
 
-    for (let index = 0; index < dataLength; index++) {
-        const repoName = data[index].name;
+        for (let index = 0; index < dataLength; index++) {
+            const repoName = data[index].name;
 
-        reposPromises.push(octokit.issues.listForRepo({
-            owner: user,
-            repo: repoName
-        }));
-    }
-
-    Promise.all(reposPromises).then(responses => {
-
-        let reposAndTheirIssues = [];
-        const responsesLength = responses.length;
-
-        for (let index = 0; index < responsesLength; index++) {
-
-            const repoName = data[index].name,
-                repoIssues = responses[index].data;
-
-            reposAndTheirIssues.push({
-                repo: repoName,
-                issues: repoIssues
-            });
+            reposPromises.push(octokit.issues.listForRepo({
+                owner: user,
+                repo: repoName
+            }));
         }
 
-        console.log(reposAndTheirIssues);
-    }).catch(reason => {
-        console.error(reason);
-    });
+        return Promise.all(reposPromises).then(responses => {
 
+            let reposAndTheirIssues = [];
+            const responsesLength = responses.length;
+
+            for (let index = 0; index < responsesLength; index++) {
+
+                const repoName = data[index].name,
+                    repoIssues = responses[index].data;
+
+                reposAndTheirIssues.push({
+                    repo: repoName,
+                    issues: repoIssues
+                });
+            }
+
+            console.log(reposAndTheirIssues);
+        }).catch(reason => console.error(reason));
+    }).catch(reason => console.error(reason));
 }
 getRepos('IntersysConsulting');
