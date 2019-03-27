@@ -1,0 +1,23 @@
+{
+  "name": "list-repos",
+  "version": "0.0.1-alpha",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "dotenv": "^7.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/L0y3r/list-repos.git"
+  },
+  "author": "L0y3r",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/L0y3r/list-repos/issues"
+  },
+  "homepage": "https://github.com/L0y3r/list-repos#readme"
+}
