@@ -4,9 +4,13 @@ const app = express();
 const port = 3000;
 
 app.get('/:user', async (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    const data = JSON.stringify(await repos.getRepos(req.params.user));
-    res.send(data);
+    try {
+        const data = await repos.getRepos(req.params.user);
+        res.json(data);
+    } catch (error) {
+        res.send(error);
+        return;
+    }
 });
 
 app.listen(port);

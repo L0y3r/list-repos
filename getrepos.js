@@ -8,36 +8,24 @@ module.exports = {
     getRepos: (user) => {
         return octokit.repos.listForUser({ username: user }).then(({ data }) => {
 
-            let reposPromises = [];
-            const dataLength = data.length;
-    
-            for (let index = 0; index < dataLength; index++) {
-                const repoName = data[index].name;
-    
-                reposPromises.push(octokit.issues.listForRepo({
+            const reposPromises = data.map(element => {
+                return octokit.issues.listForRepo({
                     owner: user,
-                    repo: repoName
-                }));
-            }
+                    repo: element.name
+                })
+            });
     
             return Promise.all(reposPromises).then(responses => {
-    
-                let reposAndTheirIssues = [];
-                const responsesLength = responses.length;
-    
-                for (let index = 0; index < responsesLength; index++) {
-    
-                    const repoName = data[index].name,
-                        repoIssues = responses[index].data;
-    
-                    reposAndTheirIssues.push({
-                        repo: repoName,
-                        issues: repoIssues
-                    });
-                }
+
+                const reposAndTheirIssues = responses.map((response, index) => {
+                    return {
+                        repo: data[index].name,
+                        issues: response.data
+                    };
+                });
     
                 return reposAndTheirIssues;
-            }).catch(reason => console.error(reason));
-        }).catch(reason => console.error(reason));
+            });
+        });
     }
 }
